@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Painel STA · Indicadores Operacionais</title>
+<link href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/styles.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js" integrity="sha384-NrKB+u6Ts6AtkIhwPixiKTzgSKNblyhlk0Sohlgar9UHUBzai/sgnNNWWd291xqt" crossorigin="anonymous"></script>
+</head>
+<body>
+<div class="page">
+
+  <header class="page-header">
+    <div class="page-brand">
+      <div>
+        <div class="eyebrow">Laboratório Sobral</div>
+        <h1>Indicadores Operacionais · STA</h1>
+      </div>
+    </div>
+    <div class="updated-at" id="updated-at">&nbsp;</div>
+  </header>
+
+  <nav class="page-nav">
+    <a href="/index.html" class="nav-tab">Financeiro</a>
+    <a href="/operacional.html" class="nav-tab active">Operacional</a>
+  </nav>
+
+  <div id="status-msg" class="status-msg" hidden></div>
+
+  <section class="card filtros">
+    <div class="campo">
+      <label for="filtro-inicio">Data inicial</label>
+      <input type="date" id="filtro-inicio">
+    </div>
+    <div class="campo">
+      <label for="filtro-fim">Data final</label>
+      <input type="date" id="filtro-fim">
+    </div>
+    <button id="btn-atualizar" class="btn-outline">Atualizar</button>
+    <button id="btn-periodo-completo" class="btn-outline">Período completo</button>
+  </section>
+
+  <section class="card">
+    <div class="card-title">
+      <span class="accent-bar"></span>
+      <div>
+        <h2>Sistema de Tratamento de Água — Sobral</h2>
+        <p id="takeaway">Carregando resumo do histórico de tendências…</p>
+      </div>
+    </div>
+    <div class="info-banner" id="gap-banner" hidden></div>
+  </section>
+
+  <section class="stats-row">
+    <div class="card stat">
+      <div class="label">Dias com registro</div>
+      <div class="value" id="kpi-days">—</div>
+    </div>
+    <div class="card stat">
+      <div class="label">Período coberto</div>
+      <div class="value value--periodo" id="kpi-period">—</div>
+    </div>
+    <div class="card stat">
+      <div class="label">Tags monitoradas</div>
+      <div class="value" id="kpi-tags">—</div>
+    </div>
+    <div class="card stat">
+      <div class="label">Leituras agregadas</div>
+      <div class="value" id="kpi-readings">—</div>
+    </div>
+  </section>
+
+  <div id="sections-root"></div>
+
+  <section class="card">
+    <div class="card-title">
+      <span class="accent-bar"></span>
+      <div>
+        <h2>Alarmes</h2>
+        <p>Ativações de alarme extraídas do log do SCADA, mesmo período dos indicadores acima. Os rótulos são uma interpretação provável a partir do padrão de nomenclatura da tag — não confirmados no banco de tags oficial (arquivo SQL Server inacessível neste ambiente).</p>
+      </div>
+    </div>
+    <div class="info-banner" id="alarm-caveat-banner">
+      ~2.854 eventos da tag CHILER vieram sem data/hora legível no log e foram contados à parte; ~12 mil registros com data corrompida (herança de um slot de disco reaproveitado do logger) foram descartados por caírem fora do período coberto.
+    </div>
+  </section>
+
+  <section class="stats-row stats-row--3">
+    <div class="card stat">
+      <div class="label">Ativações de alarme no período</div>
+      <div class="value" id="kpi-alarm-total">—</div>
+    </div>
+    <div class="card stat">
+      <div class="label">Tags de alarme distintas</div>
+      <div class="value" id="kpi-alarm-tags">—</div>
+    </div>
+    <div class="card stat">
+      <div class="label">Dias com algum alarme ativo</div>
+      <div class="value" id="kpi-alarm-days">—</div>
+    </div>
+  </section>
+
+  <section class="card">
+    <div class="card-title">
+      <span class="accent-bar"></span>
+      <div>
+        <h2>Ativações de alarme por dia</h2>
+        <p>Soma de todas as tags, por dia.</p>
+      </div>
+    </div>
+    <canvas id="chart-alarm-diario" height="90"></canvas>
+  </section>
+
+  <section class="card tabela-card">
+    <div class="card-title" style="padding: 20px 22px 0;">
+      <span class="accent-bar"></span>
+      <div>
+        <h2>Alarmes mais frequentes</h2>
+        <p>Top 15 por número de ativações no período.</p>
+      </div>
+    </div>
+    <div class="tabela-scroll">
+      <table class="tabela">
+        <thead>
+          <tr><th>Tag</th><th>Interpretação provável</th><th>Ativações</th><th>Primeiro registro</th><th>Último registro</th></tr>
+        </thead>
+        <tbody id="alarm-tabela-body"></tbody>
+      </table>
+    </div>
+  </section>
+
+</div>
+
+<script src="/operacional.js"></script>
+</body>
+</html>

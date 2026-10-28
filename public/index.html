@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Painel STA · Indicadores Financeiros</title>
+<link href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/styles.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js" integrity="sha384-NrKB+u6Ts6AtkIhwPixiKTzgSKNblyhlk0Sohlgar9UHUBzai/sgnNNWWd291xqt" crossorigin="anonymous"></script>
+</head>
+<body>
+<div class="page">
+
+  <header class="page-header">
+    <div class="page-brand">
+      <div>
+        <div class="eyebrow">Laboratório Sobral</div>
+        <h1>Indicadores Financeiros · STA</h1>
+      </div>
+    </div>
+    <div class="updated-at" id="updated-at">&nbsp;</div>
+  </header>
+
+  <nav class="page-nav">
+    <a href="/index.html" class="nav-tab active">Financeiro</a>
+    <a href="/operacional.html" class="nav-tab">Operacional</a>
+  </nav>
+
+  <div id="status-msg" class="status-msg" hidden></div>
+
+  <section class="card">
+    <div class="card-title">
+      <span class="accent-bar"></span>
+      <div>
+        <h2>Compras e Pagamentos</h2>
+        <p>Centro de custo STA — notas de compra e parcelas liquidadas no período selecionado.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="card filtros">
+    <div class="campo">
+      <label for="filtro-inicio">Data inicial</label>
+      <input type="date" id="filtro-inicio">
+    </div>
+    <div class="campo">
+      <label for="filtro-fim">Data final</label>
+      <input type="date" id="filtro-fim">
+    </div>
+    <button id="btn-atualizar" class="btn-outline">Atualizar</button>
+  </section>
+
+  <section class="stats-row">
+    <div class="card stat">
+      <div class="label">Total Comprado</div>
+      <div class="value" id="kpi-total-comprado">—</div>
+      <div class="sub" id="kpi-total-comprado-sub">&nbsp;</div>
+    </div>
+    <div class="card stat">
+      <div class="label">Total Pago</div>
+      <div class="value" id="kpi-total-pago">—</div>
+      <div class="sub" id="kpi-total-pago-sub">&nbsp;</div>
+    </div>
+    <div class="card stat">
+      <div class="label">Prazo Médio de Pagamento</div>
+      <div class="value" id="kpi-prazo-medio">—</div>
+      <div class="sub">emissão → pagamento</div>
+    </div>
+    <div class="card stat stat--destaque">
+      <div class="label">Maior Fornecedor</div>
+      <div class="value value--nome" id="kpi-maior-fornecedor">—</div>
+      <div class="sub" id="kpi-maior-fornecedor-sub">&nbsp;</div>
+    </div>
+  </section>
+
+  <section class="card">
+    <div class="card-title">
+      <span class="accent-bar"></span>
+      <div>
+        <h2>Evolução de Comprado × Pago</h2>
+        <p>Total por mês ao longo do período selecionado.</p>
+      </div>
+    </div>
+    <canvas id="chart-mes" height="110"></canvas>
+  </section>
+
+  <section class="card">
+    <div class="card-title">
+      <span class="accent-bar"></span>
+      <div>
+        <h2>Ranking de Fornecedores</h2>
+        <p>Maiores valores comprados no período.</p>
+      </div>
+    </div>
+    <div id="ranking-lista"></div>
+  </section>
+
+  <section class="card tabela-card">
+    <div class="tabs">
+      <div class="tab active" data-tab="compras">Compras</div>
+      <div class="tab" data-tab="pagamentos">Pagamentos</div>
+    </div>
+    <div class="tabela-scroll">
+      <table class="tabela">
+        <thead id="tabela-head"></thead>
+        <tbody id="tabela-body"></tbody>
+      </table>
+    </div>
+  </section>
+
+</div>
+
+<script src="/app.js"></script>
+</body>
+</html>

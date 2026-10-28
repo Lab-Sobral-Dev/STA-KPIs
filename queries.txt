@@ -1,0 +1,60 @@
+Compras STA
+
+SELECT 
+  T0."Serial", 
+  T0."CardCode", 
+  T0."CardName", 
+  T0."TaxDate" , 
+  T1."ItemCode", 
+  T1."Dscription", 
+  T1."Quantity", 
+  T1."Price", 
+  T1."LineTotal", 
+  T1."OcrCode" 
+FROM OPCH T0  INNER JOIN PCH1 T1 ON T0."DocEntry" = T1."DocEntry" 
+WHERE T1."OcrCode" = '392'
+AND T0."TaxDate" >= {?DataInicial} 
+AND T0."TaxDate" <= {?DataFinal}
+AND  T1."ItemCode" <> 'SA000070' --Salarios
+AND  T1."ItemCode" <> 'SA000092' --Recisão
+AND  T1."ItemCode" <> 'SA000091' --Férias
+
+Fluxo de caixa STA
+
+SELECT 
+    T0."CardCode"    AS "Codigo do Fornecedor", 
+    T0."CardName"    AS "Fornecedor",
+    T3."CityS"       AS "Cidade", 
+    T3."StateS"      AS "UF",
+    T0."DocNum"      AS "Nº do Titulo", 
+    T0."Serial"      AS "NF",          
+    TO_VARCHAR(T1."InstlmntID") || '/' ||
+        TO_VARCHAR((SELECT COUNT(*) FROM PCH6 P WHERE P."DocEntry" = T0."DocEntry")) AS "Parcela",
+    T0."TaxDate"     AS "Data de Emissao",
+    T1."InsTotal"    AS "Valor da Parcela",
+    T1."DueDate"     AS "Vencimento da Parcela",
+    T1."VatSum"      AS "Imposto da Parcela", 
+    T33."DocDate"    AS "Data de Pagamento",
+    T22."SumApplied" AS "Valor Pago",
+    T0."Comments"
+FROM OPCH T0 
+    INNER JOIN PCH6  T1  ON T0."DocEntry" = T1."DocEntry" 
+    LEFT  JOIN PCH12 T3  ON T0."DocEntry" = T3."DocEntry"
+    INNER JOIN VPM2  T22 ON T0."DocEntry" = T22."DocEntry" 
+                        AND T22."InstId"  = T1."InstlmntID" 
+                        AND T22."InvType" = '18' 
+    INNER JOIN OVPM  T33 ON T22."DocNum"  = T33."DocEntry" 
+WHERE 
+    T0."CANCELED"  = 'N' 
+    AND T33."Canceled" = 'N'
+    AND T22."SumApplied" > 0
+    AND T33."DocDate" >= {?DataInicio}
+    AND T33."DocDate" <= {?DataFinal}
+    AND EXISTS (
+        SELECT 1 
+        FROM PCH1 L 
+        WHERE L."DocEntry" = T0."DocEntry" 
+          AND L."OcrCode"  = '392'
+    )
+ORDER BY T0."DocNum", T1."InstlmntID"
+
