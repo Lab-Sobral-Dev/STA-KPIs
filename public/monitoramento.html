@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Painel STA · Monitoramento</title>
+<link href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+<div class="page">
+
+  <header class="page-header">
+    <div class="page-brand">
+      <div>
+        <div class="eyebrow">Laboratório Sobral</div>
+        <h1>Monitoramento · STA</h1>
+      </div>
+    </div>
+  </header>
+
+  <nav class="page-nav">
+    <a href="/index.html" class="nav-tab">Financeiro</a>
+    <a href="/operacional.html" class="nav-tab">Operacional</a>
+    <a href="/monitoramento.html" class="nav-tab active">Monitoramento</a>
+  </nav>
+
+  <div id="status-msg" class="status-msg" hidden></div>
+
+  <section class="card filtros">
+    <div class="campo">
+      <label for="filtro-mes">Mês/ano</label>
+      <input type="month" id="filtro-mes">
+    </div>
+  </section>
+
+  <section class="card tabela-card">
+    <div class="tabs" id="fichas-tabs"></div>
+    <div class="mon-corpo">
+      <div class="card-title">
+        <span class="accent-bar"></span>
+        <div>
+          <h2 id="ficha-titulo">Carregando…</h2>
+          <p id="ficha-sub"></p>
+        </div>
+      </div>
+      <form id="ficha-form" class="mon-form" novalidate>
+        <div class="mon-campos" id="ficha-campos"></div>
+        <div class="mon-acoes">
+          <button type="submit" class="btn-primario" id="btn-salvar">Salvar</button>
+          <button type="button" class="btn-outline" id="btn-cancelar" hidden>Cancelar edição</button>
+        </div>
+      </form>
+    </div>
+    <div class="tabela-scroll">
+      <table class="tabela">
+        <thead id="ficha-thead"></thead>
+        <tbody id="ficha-tbody"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="card tabela-card" id="resumo-card" hidden>
+    <div class="card-title" style="padding: 20px 22px 0;">
+      <span class="accent-bar"></span>
+      <div>
+        <h2>Resumo semanal</h2>
+        <p>Semanas de segunda a domingo dentro do mês. Calculado a partir dos registros acima.</p>
+      </div>
+    </div>
+    <div class="tabela-scroll">
+      <table class="tabela">
+        <thead id="resumo-thead"></thead>
+        <tbody id="resumo-tbody"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="card" id="legenda-card" hidden>
+    <div class="card-title">
+      <span class="accent-bar"></span>
+      <div><h2>Legenda</h2></div>
+    </div>
+    <ul class="mon-legenda" id="legenda-lista"></ul>
+  </section>
+
+</div>
+
+<script src="/monitoramento.js"></script>
+</body>
+</html>

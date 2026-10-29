@@ -98,3 +98,28 @@ body { margin: 0; background: var(--claro); font-family: 'Ubuntu', sans-serif; c
   .stats-row, .stats-row--3 { grid-template-columns: 1fr; }
   .filtros { flex-direction: column; align-items: stretch; }
 }
+
+/* Aba Monitoramento (lancamento das fichas da manutencao) */
+.tabs { flex-wrap: wrap; }
+.mon-corpo { padding: 20px 22px; border-bottom: 1.5px solid var(--borda); }
+.mon-form { margin-top: 16px; display: flex; flex-direction: column; gap: 14px; }
+.mon-campos { display: flex; flex-wrap: wrap; gap: 14px; }
+.mon-campos .campo input { width: 9.5rem; }
+.mon-acoes { display: flex; gap: 10px; flex-wrap: wrap; }
+.btn-primario { font-family: 'Ubuntu', sans-serif; border: 1.5px solid var(--laranja); border-radius: 6px; background: var(--laranja); color: var(--branco); font-weight: 700; font-size: 13px; padding: 9px 22px; cursor: pointer; }
+.btn-primario:hover { filter: brightness(.95); }
+.btn-primario:disabled { opacity: .5; cursor: default; }
+.btn-link { font-family: 'Ubuntu', sans-serif; background: none; border: none; color: var(--laranja); font-size: 11px; font-weight: 700; cursor: pointer; padding: 2px 4px; }
+.btn-link:hover { text-decoration: underline; }
+.btn-link[data-excluir] { color: var(--cinza); }
+.mon-linha-acoes { text-align: right; }
+.tabela td.mon-calc { color: var(--laranja); font-weight: 700; }
+.tabela td.mon-alerta { color: var(--branco); background: var(--laranja) !important; }
+.tabela tr.mon-editando td { background: var(--laranja-fraco) !important; }
+.tabela tr.mon-total td { border-top: 1.5px solid var(--borda); font-weight: 700; }
+.mon-vazio { color: var(--cinza); text-align: center; }
+.mon-periodo { color: var(--cinza); font-size: 11px; }
+.mon-legenda { margin: 12px 0 0; padding-left: 18px; font-size: 12px; color: var(--cinza); line-height: 1.7; }
+@media (max-width: 520px) {
+  .mon-campos .campo, .mon-campos .campo input { width: 100%; }
+}

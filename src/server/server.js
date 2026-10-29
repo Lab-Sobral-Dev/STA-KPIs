@@ -9,8 +9,14 @@ const { createQueryBuilder } = require('./queries');
 const { createApiRouter } = require('./routes/api');
 const { loadOperationalData } = require('./operationalData');
 const { createOperacionalRouter } = require('./routes/operacional');
+const { createMonitoramentoStore } = require('./monitoramento');
+const { createMonitoramentoRouter } = require('./routes/monitoramento');
 
 const PORT = process.env.PORT || 3000;
+// Por padrao, so aceita conexoes locais: o painel nao tem autenticacao e fala
+// com a API financeira do HANA, entao nao deve ficar exposto na rede sem querer.
+// Defina HOST=0.0.0.0 (e adicione autenticacao) se for publicar para outras pessoas.
+const HOST = process.env.HOST || '127.0.0.1';
 
 function main() {
   const hanaClient = createHanaClient({
@@ -20,6 +26,10 @@ function main() {
 
   const cache = createCache({ dbPath: process.env.MRP_LOCAL_DB || './data/mrp.db' });
   const queryBuilder = createQueryBuilder(process.env.HANA_SCHEMA);
+  // Arquivo separado do cache: aqui ficam lancamentos manuais, que nao podem ser descartados.
+  const monitoramentoStore = createMonitoramentoStore({
+    dbPath: process.env.MONITORAMENTO_DB || './data/monitoramento.db',
+  });
 
   const operacionalDataDir = path.resolve(
     process.env.OPERACIONAL_DATA_DIR || path.join(__dirname, '..', '..', 'data', 'operacional'),
@@ -38,6 +48,7 @@ function main() {
 
   const app = express();
   app.use(express.static(path.join(__dirname, '..', '..', 'public')));
+  app.use('/api/monitoramento', createMonitoramentoRouter({ store: monitoramentoStore }));
   app.use('/api', createApiRouter({ hanaClient, cache, queryBuilder }));
   app.use('/api/operacional', createOperacionalRouter({
     getData: () => {
@@ -56,8 +67,8 @@ function main() {
     res.status(status).json({ erro: err.message });
   });
 
-  app.listen(PORT, () => {
-    console.log(`Painel STA rodando em http://localhost:${PORT}`);
+  app.listen(PORT, HOST, () => {
+    console.log(`Painel STA rodando em http://${HOST}:${PORT}`);
   });
 }
 
