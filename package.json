@@ -8,7 +8,8 @@
   "scripts": {
     "start": "node src/server/server.js",
     "dev": "node --watch src/server/server.js",
-    "build:operacional": "python scripts/parse_trend.py && python scripts/parse_alarms.py"
+    "build:operacional": "python scripts/parse_trend.py && python scripts/parse_alarms.py",
+    "test": "node --test test/acoplamento.test.js"
   },
   "engines": {
     "node": ">=22.5.0"
