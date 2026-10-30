@@ -6,13 +6,15 @@ RUN npm ci --omit=dev
 
 COPY src ./src
 COPY public ./public
+# Dados operacionais versionados no repo (data/operacional/*.csv): vao na imagem, e o deploy de cada commit os atualiza.
+COPY data/operacional ./data/operacional
 
-# Lancamentos do Monitoramento (SQLite) e dados operacionais ficam no volume /data (nao apagar).
+# Lancamentos do Monitoramento (SQLite) ficam no volume /data (nao apagar). Os dados operacionais vem da imagem
+# (OPERACIONAL_DATA_DIR nao e definido: o padrao do codigo e /app/data/operacional).
 # Sem DOCKING_SECRET o painel fica aberto: em producao sempre passar DOCKING_SECRET
 # (mesmo valor do Gestao SBR) via --env-file.
 ENV NODE_ENV=production PORT=3000 HOST=0.0.0.0 \
-    MRP_LOCAL_DB=/data/mrp.db MONITORAMENTO_DB=/data/monitoramento.db \
-    OPERACIONAL_DATA_DIR=/data/operacional
+    MRP_LOCAL_DB=/data/mrp.db MONITORAMENTO_DB=/data/monitoramento.db
 RUN mkdir /data && chown node:node /data
 VOLUME /data
 USER node
