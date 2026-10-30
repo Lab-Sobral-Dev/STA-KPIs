@@ -11,14 +11,21 @@ const { loadOperationalData } = require('./operationalData');
 const { createOperacionalRouter } = require('./routes/operacional');
 const { createMonitoramentoStore } = require('./monitoramento');
 const { createMonitoramentoRouter } = require('./routes/monitoramento');
+const { createAuth } = require('./auth');
 
 const PORT = process.env.PORT || 3000;
-// Por padrao, so aceita conexoes locais: o painel nao tem autenticacao e fala
-// com a API financeira do HANA, entao nao deve ficar exposto na rede sem querer.
-// Defina HOST=0.0.0.0 (e adicione autenticacao) se for publicar para outras pessoas.
+// Por padrao, so aceita conexoes locais: o painel fala com a API financeira do HANA,
+// entao nao deve ficar exposto na rede sem querer. Fora do loopback (HOST=0.0.0.0, como no
+// container) exige DOCKING_SECRET: o acesso passa pelo SSO do Gestao SBR (src/server/auth.js).
 const HOST = process.env.HOST || '127.0.0.1';
+const DOCKING_SECRET = process.env.DOCKING_SECRET;
+const LOOPBACK = ['127.0.0.1', '::1', 'localhost'];
 
 function main() {
+  if (!DOCKING_SECRET && !LOOPBACK.includes(HOST)) {
+    throw new Error(`HOST=${HOST} exige DOCKING_SECRET: o painel nao pode ficar aberto na rede sem autenticacao.`);
+  }
+  const auth = createAuth({ dockingSecret: DOCKING_SECRET, cookieSecure: process.env.SESSION_COOKIE_SECURE === 'true' });
   const hanaClient = createHanaClient({
     baseUrl: process.env.HANA_API_URL,
     apiKey: process.env.HANA_API_KEY,
@@ -47,6 +54,9 @@ function main() {
   }
 
   const app = express();
+  app.use(auth.cabecalhos);
+  app.get('/api/auth/sso', auth.sso);
+  app.use(auth.exigirSessao);
   app.use(express.static(path.join(__dirname, '..', '..', 'public')));
   app.use('/api/monitoramento', createMonitoramentoRouter({ store: monitoramentoStore }));
   app.use('/api', createApiRouter({ hanaClient, cache, queryBuilder }));
