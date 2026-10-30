@@ -20,6 +20,7 @@ const PORT = process.env.PORT || 3000;
 const HOST = process.env.HOST || '127.0.0.1';
 
 function main() {
+  acoplamento.validarConfig(acoplamento.configDoAmbiente(), HOST);
   const hanaClient = createHanaClient({
     baseUrl: process.env.HANA_API_URL,
     apiKey: process.env.HANA_API_KEY,
@@ -50,6 +51,7 @@ function main() {
   const acopla = acoplamento.configDoAmbiente();
   const app = express();
   app.use(acoplamento.cabecalhoFrame(acopla));
+  app.get('/healthz', acoplamento.healthz);
   app.use('/api/auth', acoplamento.authRouter(acopla));
   app.use(acoplamento.exigirSessao(acopla));
   app.use(express.static(path.join(__dirname, '..', '..', 'public')));
