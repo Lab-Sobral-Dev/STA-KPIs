@@ -11,6 +11,7 @@ const { loadOperationalData } = require('./operationalData');
 const { createOperacionalRouter } = require('./routes/operacional');
 const { createMonitoramentoStore } = require('./monitoramento');
 const { createMonitoramentoRouter } = require('./routes/monitoramento');
+const acoplamento = require('./acoplamento');
 
 const PORT = process.env.PORT || 3000;
 // Por padrao, so aceita conexoes locais: o painel nao tem autenticacao e fala
@@ -46,7 +47,11 @@ function main() {
     console.error('Rode "python scripts/parse_trend.py" e "python scripts/parse_alarms.py" para gera-los.');
   }
 
+  const acopla = acoplamento.configDoAmbiente();
   const app = express();
+  app.use(acoplamento.cabecalhoFrame(acopla));
+  app.use('/api/auth', acoplamento.authRouter(acopla));
+  app.use(acoplamento.exigirSessao(acopla));
   app.use(express.static(path.join(__dirname, '..', '..', 'public')));
   app.use('/api/monitoramento', createMonitoramentoRouter({ store: monitoramentoStore }));
   app.use('/api', createApiRouter({ hanaClient, cache, queryBuilder }));
