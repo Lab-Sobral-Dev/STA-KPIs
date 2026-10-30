@@ -17,5 +17,6 @@ tudo (páginas e `/api`). Sem `DOCKING_SECRET` o painel segue aberto, para uso l
 
 Docker: `docker build -t sta-kpis .` e
 `docker run --env-file .env -v sta-data:/data -p 127.0.0.1:3000:3000 sta-kpis`.
-O volume `/data` guarda os lançamentos do Monitoramento (não apagar) e `operacional/` (dados gerados
-por `scripts/parse_*.py`, que não vão no repositório). Testes: `npm test`.
+O volume `/data` guarda os lançamentos do Monitoramento (não apagar). Os dados operacionais
+(`data/operacional/*.csv`, versionados no repositório) entram na imagem: atualizar os CSVs e fazer o commit
+basta, o deploy seguinte já os leva. Testes: `npm test`.
