@@ -1,0 +1,9 @@
+node_modules
+data
+.env
+.git
+*.log
+*.pdf
+image.png
+queries.txt
+scripts
